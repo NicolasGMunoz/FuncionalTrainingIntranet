@@ -7,6 +7,10 @@ body{
     flex-direction: column;
 }
 
+nav{
+  background-color: rgb(204, 184, 9) ;
+}
+
 h1{
   padding-top: 5%;
   color: rgb(60, 60, 60);

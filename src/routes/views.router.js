@@ -23,8 +23,19 @@ router.get("/", (req, res) => {
 })
 
 //login
+router.get("/login", (req, res) => {
+    res.render("login");
+})
 
+//pagos
+router.get("/pagos", (req, res) => {
+    res.render("pagos");
+})
 
+//rutinas
+router.get("/rutinas", (req, res) => {
+    res.render("rutinas");
+})
 
 
 

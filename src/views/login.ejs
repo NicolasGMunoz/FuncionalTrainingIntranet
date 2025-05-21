@@ -21,47 +21,29 @@
 </head>
 
 <body>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/"><img src="/assets/funcional.png"  width="80" height="50" alt="homefoto"></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-            <a class="nav-link" href="/pagos">Pagos</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" href="/rutinas">Rutinas</a>
-            </li>
-        </ul>
-        
-          <a href="/login"><button class="btn btn-outline-black" type="button">Ingresar</button></a>  
-        
-        
-        </div>
-    </div>
-    </nav>
 
 
 
-        <section class="container-fluid">
-            <div class="row">
-                <div class="col-lg-3   container-fluid"></div>
-                <div class="col-lg-3 container-fluid"><img src="/assets/imagen2.jpg" alt=""></div>
-                <div class="col-lg-3 container-fluid"></div>
-            </div>
+        <section class="d-flex justify-content-center align-items-center ">
+               <img src="/assets/funcional.png" alt="logo" width="200" height="180">
         </section>
     
         <section class="container-fluid">
-            <div class="row justify-content-center text-center">
+            <div class="d-flex justify-content-center align-items-center text-center">
                 <div class="col-lg-4">
-                    <label for="dni" style="color: rgb(204, 184, 9);">DNI</label>
+                    <label for="dni" style="color: rgb(204, 184, 9);">Usuario</label>
+                  
                     <form action="#" method="post">
-                        <input type="number" id="dni" name="dni" required 
+                        <input type="text" id="dni" name="dni" required 
                                style="padding: 10px; font-size: 16px; border-radius: 5px; width: 200px;">
                     </form>
+                    <label for="dni" style="color: rgb(204, 184, 9);">Contraseña</label>
+
+                    <form action="" method="post">
+                        <input type="password" id="pass" name="pass" required 
+                               style="padding: 10px; font-size: 16px; border-radius: 5px; width: 200px;">
+                    </form>
+                    
                 </div>
             </div>
         </section>
