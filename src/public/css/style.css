@@ -8,7 +8,7 @@ body{
 }
 
 nav{
-  background-color: rgb(204, 184, 9) ;
+  background-color: rgb(254, 199, 1) ;
 }
 
 h1{
@@ -20,7 +20,7 @@ h1{
   /* footer */
   .footerText {
     text-decoration: none;
-    background-color: rgb(204, 184, 9);
+    background-color: rgb(254, 199, 1);
     color: rgb(0, 0, 0);
     text-align: center;
     transition: all 0.5s;
@@ -33,7 +33,7 @@ h1{
   
   footer {
     margin-top: 20px;
-    background-color: rgb(204, 184, 9);
+    background-color: rgb(254,199,1);
     color: rgb(0, 0, 0);
     text-align: center;
 
