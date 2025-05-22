@@ -24,31 +24,29 @@
 
 
 
-        <section class="d-flex justify-content-center align-items-center ">
-               <img src="/assets/funcional.png" alt="logo" width="200" height="180">
-        </section>
+        <section class="d-flex flex-column justify-content-center align-items-center" style="height: 100vh;">
+
+  <div class="mb-4 text-center">
+    <img src="/assets/funcional.png" alt="logo" width="200" height="180">
+  </div>
+  <form action="/login" method="post" 
+        class="d-flex flex-column justify-content-center align-items-center">
     
-        <section class="container-fluid">
-            <div class="d-flex justify-content-center align-items-center text-center">
-                <div class="col-lg-4">
-                    <label for="dni" style="color: rgb(204, 184, 9);">Usuario</label>
-                  
-                    <form action="#" method="post">
-                        <input type="text" id="dni" name="dni" required 
-                               style="padding: 10px; font-size: 16px; border-radius: 5px; width: 200px;">
-                    </form>
-                    <label for="dni" style="color: rgb(204, 184, 9);">Contraseña</label>
+    <div class="mb-3 text-center">
+      <label for="dni" style="color: rgb(254, 199, 1);">Usuario</label><br>
+      <input type="text" id="dni" name="dni" required 
+             style="padding: 10px; font-size: 16px; border-radius: 5px; width: 200px;">
+    </div>
 
-                    <form action="" method="post">
-                        <input type="password" id="pass" name="pass" required 
-                               style="padding: 10px; font-size: 16px; border-radius: 5px; width: 200px;">
-                    </form>
-                    
-                </div>
-            </div>
-        </section>
+    <div class="mb-3 text-center">
+      <label for="pass" style="color: rgb(254, 199, 1);">Contraseña</label><br>
+      <input type="password" id="pass" name="pass" required 
+             style="padding: 10px; font-size: 16px; border-radius: 5px; width: 200px;">
+    </div>
 
-
+    <button type="submit" class="btn" style="background-color: rgb(254, 199, 1);">Ingresar</button>
+  </form>
+</section>
 
 
 
