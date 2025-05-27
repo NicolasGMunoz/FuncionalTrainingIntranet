@@ -15,9 +15,9 @@ export default class RutinaManager{
             }
     }
 
-    async getRutinaByNombre(idClase){
+    async getRutinaByNombre(Nombre_rutina){
         try {
-            await this.pool.query('SELECT * FROM Rutina WHERE Nombre_rutina = ?', [idClase])
+            await this.pool.query('SELECT * FROM Rutina WHERE Nombre_rutina = ?', [Nombre_rutina])
         }
         catch(e){
             console.error(e)
