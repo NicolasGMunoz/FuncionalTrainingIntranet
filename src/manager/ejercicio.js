@@ -57,6 +57,7 @@ catch(e){
         }
         catch(e){
             console.error("Error al buscar ejercicios",e)
+            return []
         }
     
     }

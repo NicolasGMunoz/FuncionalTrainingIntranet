@@ -75,10 +75,6 @@ router.get("/pagos", (req, res) => {
     res.render("pagos");
 })
 
-//rutinas
-router.get("/rutinas", (req, res) => {
-    res.render("rutinas");
-})
 
 
 //ejercicios
@@ -123,6 +119,165 @@ router.post('/ejercicios/editar', async (req, res) => {
   } catch (e) {
     const ejercicios = await ejercicioManager.getEjercicios();
     res.render('ejercicios', { ejercicios, success: null, error: 'Error al actualizar ejercicio' });
+  }
+});
+
+
+async function cargarDatos() {
+  const [rutinas, ejercicios, alumnos] = await Promise.all([
+    rutinaManager.getRutinas(),
+    ejercicioManager.getEjercicios(),
+    personaManager.getAlumnos()
+  ]);
+  return { rutinas, ejercicios, alumnos };
+  
+}
+
+
+//rutinas
+
+// GET /rutinas
+router.get('/rutinas', async (req, res) => {
+  try {
+    const { rutinas, ejercicios, alumnos } = await cargarDatos();
+    res.render('rutinas', {
+      rutinas,
+      ejercicios,
+      alumnos,
+      success: null,
+      error:   null
+    });
+  } catch (e) {
+    res.render('rutinas', {
+      rutinas:    [],
+      ejercicios: [],
+      alumnos:    [],
+      success:    null,
+      error:      'Error al cargar datos'
+    });
+  }
+});
+
+// POST /rutinas — crear
+router.post('/rutinas', async (req, res) => {
+  const { Nombre_rutina } = req.body;
+  try {
+    await rutinaManager.addRutina(Nombre_rutina);
+    const { rutinas, ejercicios, alumnos } = await cargarDatos();
+    res.render('rutinas', {
+      rutinas,
+      ejercicios,
+      alumnos,
+      success: 'Rutina creada',
+      error:   null
+    });
+  } catch {
+    const { rutinas, ejercicios, alumnos } = await cargarDatos();
+    res.render('rutinas', {
+      rutinas,
+      ejercicios,
+      alumnos,
+      success: null,
+      error:   'Error al crear rutina'
+    });
+  }
+});
+
+// POST /rutinas/editar — renombrar
+router.post('/rutinas/editar', async (req, res) => {
+  const { nombre_viejo, nombre_nuevo } = req.body;
+  try {
+    await rutinaManager.updateRutina(nombre_viejo, nombre_nuevo);
+    const { rutinas, ejercicios, alumnos } = await cargarDatos();
+    res.render('rutinas', {
+      rutinas,
+      ejercicios,
+      alumnos,
+      success: 'Rutina actualizada',
+      error:   null
+    });
+  } catch {
+    const { rutinas, ejercicios, alumnos } = await cargarDatos();
+    res.render('rutinas', {
+      rutinas,
+      ejercicios,
+      alumnos,
+      success: null,
+      error:   'Error al actualizar rutina'
+    });
+  }
+});
+
+// POST /rutinas/delete — eliminar
+router.post('/rutinas/delete', async (req, res) => {
+  const { nombre } = req.body;
+  try {
+    await rutinaManager.deleteRutina(nombre);
+    return res.redirect('/rutinas');
+  } catch {
+    const { rutinas, ejercicios, alumnos } = await cargarDatos();
+    res.render('rutinas', {
+      rutinas,
+      ejercicios,
+      alumnos,
+      success: null,
+      error:   'Error al eliminar rutina'
+    });
+  }
+});
+
+// POST /rutinas/asignar — asignar a alumno
+router.post('/rutinas/asignar', async (req, res) => {
+  const { Nombre_rutina, DNI } = req.body;
+  try {
+    await rutinaManager.assingRutinaToAlumno(Nombre_rutina, DNI);
+    const { rutinas, ejercicios, alumnos } = await cargarDatos();
+    res.render('rutinas', {
+      rutinas,
+      ejercicios,
+      alumnos,
+      success: 'Rutina asignada',
+      error:   null
+    });
+  } catch {
+    const { rutinas, ejercicios, alumnos } = await cargarDatos();
+    res.render('rutinas', {
+      rutinas,
+      ejercicios,
+      alumnos,
+      success: null,
+      error:   'Error al asignar rutina'
+    });
+  }
+});
+
+// POST /rutinas/ejercicio — agregar ejercicio
+router.post('/rutinas/ejercicio', async (req, res) => {
+  const { Nombre_rutina, Nombre_ejercicio, repeticiones, peso } = req.body;
+  try {
+    await rutinaManager.addEjercicioToRutina(
+      Nombre_rutina,
+      Nombre_ejercicio,
+      repeticiones,
+      peso
+    );
+    const { rutinas, ejercicios, alumnos } = await cargarDatos();
+    res.render('rutinas', {
+      rutinas,
+      ejercicios,
+      alumnos,
+      success: 'Ejercicio agregado',
+      error:   null
+    });
+  } catch {
+    const { rutinas, ejercicios, alumnos } = await cargarDatos();
+    res.render('rutinas', {
+      rutinas,
+      ejercicios,
+      alumnos,
+      success: null,
+      error:   'Error al agregar ejercicio'
+    });
   }
 });
 

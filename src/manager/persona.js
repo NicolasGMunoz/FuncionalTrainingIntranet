@@ -51,5 +51,15 @@ export default class PersonaManager{
         }
     
     }
+    async getAlumnos(){
+        try {
+            const [alumnos] = await this.pool.query('SELECT * FROM Alumno')
+            return alumnos;
+            }
+            catch(e){
+                console.error("Error al buscar ejercicio",e)
+            return []
+            }
+    }
 
 }
