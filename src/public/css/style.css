@@ -66,3 +66,29 @@ h1{
     align-items: center;
     justify-content: center;
 }
+
+ .BtnCrear {
+  background-color: rgb(254,199,1);
+  color: black;
+  font-weight: bold;
+ }
+
+ .negrita {
+  font-weight: bold;
+  color: rgb(254,199,1);
+ }
+
+ .rutinasH3{
+  text-align: center;
+  color: rgb(254,199,1);
+ }
+
+ .btnGabi{
+  background-color: black;
+  color: rgb(254,199,1);
+  font-weight: bold;
+ }
+
+ .ejerciciosh3{
+  color: rgb(254,199,1);
+ }

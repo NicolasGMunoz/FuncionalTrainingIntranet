@@ -19,60 +19,71 @@ dotenv.config()
 
 //index
 router.get("/", (req, res) => {
-    res.render("index");
+  res.render("index");
+})
+
+router.get("/alumnos", (req, res) => {
+  res.render("alumnos");
+  if (token) {
+    res.render("index", { isAuthenticated: true })
+  }
+  else {
+    res.render("login", { isAuthenticated: false })
+  }
 })
 
 //login
 router.get("/login", (req, res) => {
-    res.render("login");
-    if(token){
-        res.render("index", {isAuthenticated : true})
-        }
-        else{
-            res.render("login", {isAuthenticated : false})
-    }
+  res.render("login");
+  if (token) {
+    res.render("index", { isAuthenticated: true })
+  }
+  else {
+    res.render("login", { isAuthenticated: false })
+  }
 })
 
-router.post("/login", async (req,res) => {
-    const {dni, password} = req.body
-    try {
-        const user = await personaManager.getPersonaByDNI(dni)
-        if(!user){
-            res.status(401).send("Usuario no encontrado")
-            }
-            else if(user.password != password){
-                res.status(401).send("Contraseña incorrecta")
-            }
-            else{
-                const token = jwt.sign({dni}, process.env.SECRET_KEY, {expiresIn: process.env.JWT_TIEMPO_EXPIRACION})
-                const cookieOptions = {
-                    expires: new Date(Date.now() + process.env.JWT_TIEMPO_EXPIRACION * 24 * 60 * 60 * 100),
-                    httpOnly: true
-                }
-
-                res.cookie('jwt', token, cookieOptions)
-            res.status(200).json({ success: true, message: 'Bienvenido' });
-
-    }} catch (error) {
-        res.status(500).json({success: false , message: 'Error interno del servidor'})
+router.post("/login", async (req, res) => {
+  const { dni, password } = req.body
+  try {
+    const user = await personaManager.getPersonaByDNI(dni)
+    if (!user) {
+      res.status(401).send("Usuario no encontrado")
     }
-    
+    else if (user.password != password) {
+      res.status(401).send("Contraseña incorrecta")
+    }
+    else {
+      const token = jwt.sign({ dni }, process.env.SECRET_KEY, { expiresIn: process.env.JWT_TIEMPO_EXPIRACION })
+      const cookieOptions = {
+        expires: new Date(Date.now() + process.env.JWT_TIEMPO_EXPIRACION * 24 * 60 * 60 * 100),
+        httpOnly: true
+      }
+
+      res.cookie('jwt', token, cookieOptions)
+      res.status(200).json({ success: true, message: 'Bienvenido' });
+
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error interno del servidor' })
+  }
+
 })
 //LOGOUT
 router.get('/logout', (req, res) => {
-    res.cookie('jwt', '', { expires: new Date(0), httpOnly: true });
-    res.send(`
+  res.cookie('jwt', '', { expires: new Date(0), httpOnly: true });
+  res.send(`
         <script>
             alert('Sesión cerrada correctamente');
             window.location.href = '/login';
         </script>
     `);
-    // res.redirect('/login', );  // Redirige al inicio después de cerrar sesión
+  // res.redirect('/login', );  // Redirige al inicio después de cerrar sesión
 });
 
 //pagos
 router.get("/pagos", (req, res) => {
-    res.render("pagos");
+  res.render("pagos");
 })
 
 
@@ -130,7 +141,7 @@ async function cargarDatos() {
     personaManager.getAlumnos()
   ]);
   return { rutinas, ejercicios, alumnos };
-  
+
 }
 
 
@@ -145,15 +156,15 @@ router.get('/rutinas', async (req, res) => {
       ejercicios,
       alumnos,
       success: null,
-      error:   null
+      error: null
     });
   } catch (e) {
     res.render('rutinas', {
-      rutinas:    [],
+      rutinas: [],
       ejercicios: [],
-      alumnos:    [],
-      success:    null,
-      error:      'Error al cargar datos'
+      alumnos: [],
+      success: null,
+      error: 'Error al cargar datos'
     });
   }
 });
@@ -169,7 +180,7 @@ router.post('/rutinas', async (req, res) => {
       ejercicios,
       alumnos,
       success: 'Rutina creada',
-      error:   null
+      error: null
     });
   } catch {
     const { rutinas, ejercicios, alumnos } = await cargarDatos();
@@ -178,7 +189,7 @@ router.post('/rutinas', async (req, res) => {
       ejercicios,
       alumnos,
       success: null,
-      error:   'Error al crear rutina'
+      error: 'Error al crear rutina'
     });
   }
 });
@@ -194,7 +205,7 @@ router.post('/rutinas/editar', async (req, res) => {
       ejercicios,
       alumnos,
       success: 'Rutina actualizada',
-      error:   null
+      error: null
     });
   } catch {
     const { rutinas, ejercicios, alumnos } = await cargarDatos();
@@ -203,7 +214,7 @@ router.post('/rutinas/editar', async (req, res) => {
       ejercicios,
       alumnos,
       success: null,
-      error:   'Error al actualizar rutina'
+      error: 'Error al actualizar rutina'
     });
   }
 });
@@ -221,7 +232,7 @@ router.post('/rutinas/delete', async (req, res) => {
       ejercicios,
       alumnos,
       success: null,
-      error:   'Error al eliminar rutina'
+      error: 'Error al eliminar rutina'
     });
   }
 });
@@ -237,7 +248,7 @@ router.post('/rutinas/asignar', async (req, res) => {
       ejercicios,
       alumnos,
       success: 'Rutina asignada',
-      error:   null
+      error: null
     });
   } catch {
     const { rutinas, ejercicios, alumnos } = await cargarDatos();
@@ -246,7 +257,7 @@ router.post('/rutinas/asignar', async (req, res) => {
       ejercicios,
       alumnos,
       success: null,
-      error:   'Error al asignar rutina'
+      error: 'Error al asignar rutina'
     });
   }
 });
@@ -267,7 +278,7 @@ router.post('/rutinas/ejercicio', async (req, res) => {
       ejercicios,
       alumnos,
       success: 'Ejercicio agregado',
-      error:   null
+      error: null
     });
   } catch {
     const { rutinas, ejercicios, alumnos } = await cargarDatos();
@@ -276,7 +287,7 @@ router.post('/rutinas/ejercicio', async (req, res) => {
       ejercicios,
       alumnos,
       success: null,
-      error:   'Error al agregar ejercicio'
+      error: 'Error al agregar ejercicio'
     });
   }
 });
