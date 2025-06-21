@@ -22,11 +22,7 @@ async addAlumno(dni, nombreCompleto) {
   try {
     const persona = await this.addPersona(dni, nombreCompleto);
 const result = await this.pool.query('INSERT INTO Alumno (DNI_Persona) VALUES (?)', [dni]);
-   console.log("enzo",dni)
-
-    
-console.log("gabi",result)
-    if (!persona || !persona.success) {
+       if (!persona || !persona.success) {
       return { success: false, message: "Error al agregar Persona", e: persona?.error };
     }
 
@@ -53,15 +49,18 @@ console.log("gabi",result)
         }
     }
 
-    async getPersonaByDNI(dni){
-        try {
-            await this.pool.query('SELECT * FROM Persona WHERE DNI = ?', [dni])
+    async getPersonaByDni(dni) {
+    try {
+        const [rows] = await this.pool.query('SELECT * FROM Persona WHERE DNI = ?', [dni])
+        if (rows.length === 0) {
+            return null
         }
-        catch(e){
-            console.error("Error al buscar ejercicio",e)
-        }
-    
+        return rows[0]
+    } catch (e) {
+        console.error("Error al buscar persona", e);
+        return null
     }
+}
     async getAlumnos(){
         try {
             const [alumnos] = await this.pool.query('SELECT * FROM Alumno')
@@ -73,4 +72,14 @@ console.log("gabi",result)
             }
     }
 
+
+    async pagoCuota(dni){
+        try {
+            await this.pool.query('UPDATE alumnos SET pagocuota = 1 WHERE DNI_Persona = ?', [dni]) 
+    }
+  catch (e) {
+    console.error("Error al agregar Pago:", e);
+    return { success: false, message: "Error inesperado en pagoCuota", e };
+  }
+    }
 }

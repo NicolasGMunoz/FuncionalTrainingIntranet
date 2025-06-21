@@ -50,7 +50,7 @@
 
 
 
-    <section class="container-fluid">
+    <!--<section class="container-fluid">
         <div class="row">
             <div class="col-lg-3   container-fluid"></div>
             <div class="col-lg-3 container-fluid"><img src="/assets/imagen2.jpg" alt=""></div>
@@ -58,7 +58,7 @@
         </div>
     </section>
 
-    <section class="container-fluid">
+    /<section class="container-fluid">
         <div class="row justify-content-center text-center">
             <div class="col-lg-4 negrita">
                 <label for="dni" style="color: rgb(204, 184, 9);">DNI</label>
@@ -68,8 +68,63 @@
                 </form>
             </div>
         </div>
-    </section>
+    </section> -->
 
+
+    <section class="container-fluid">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-4 negrita">
+        <label for="dni" style="color: rgb(204, 184, 9);">DNI</label>
+        <form id="formPresencia" action="#" method="post">
+          <input
+            type="number"
+            id="dni"
+            name="dni"
+            required
+            style="padding: 10px; font-size: 16px; border-radius: 5px; width: 200px;"
+          />
+          <br /><br />
+          <button
+            type="submit"
+            style="padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer;"
+          >
+            Marcar Presente
+          </button>
+        </form>
+
+        <p id="nombreAlumno" style="margin-top: 20px;"></p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.getElementById('formPresencia').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const dni = document.getElementById('dni').value;
+
+  try {
+    const response = await fetch('/buscar-alumno', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dni }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.success) {
+      alert("Presente: " + data.nombre); // <-- Acá mostrás el nombre en el alert
+      document.getElementById('nombreAlumno').textContent = data.nombre;
+    } else {
+      alert(data.message || 'Alumno no encontrado');
+      document.getElementById('nombreAlumno').textContent = '';
+    }
+  } catch (error) {
+    alert('Alumno no existe');
+    console.error(error);
+  }
+    });
+  </script>
 
 
 

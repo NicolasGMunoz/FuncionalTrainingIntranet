@@ -32,6 +32,23 @@ router.get("/alumnos", (req, res) => {
   }
 })
 
+
+
+//presentes
+router.post('/buscar-alumno', async (req, res) => {
+  const { dni } = req.body;
+  try {
+    const persona = await personaManager.getPersonaByDni(dni);
+  if (!persona) {
+  return res.status(401).send("Alumno no encontrado desde el back");
+  }
+  res.json({ success: true, nombre: persona.Nombre_completo });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Error del servidor" });
+  }
+});
+
 //login
 router.get("/login", (req, res) => {
   res.render("login");
