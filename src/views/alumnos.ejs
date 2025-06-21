@@ -61,15 +61,22 @@
         <section class="container-fluid">
             <div class="row justify-content-center text-center">
                 <div class="col-lg-4 negrita">
-                    <label for="dni" style="color: rgb(204, 184, 9);">DNI</label>
-                    <form action="#" method="post">
+                    <label for="Crear Alumno" style="color: rgb(204, 184, 9);">Crear Alumno</label>
+                    <form action="/alumnos" method="post">
+                        <h5 style="color: rgb(204, 184, 9); padding-top: 8%;">DNI</h3>
                         <input type="number" id="dni" name="dni" required 
                                style="padding: 10px; font-size: 16px; border-radius: 5px; width: 200px;">
-                    </form>
-                    <button class="BtnCrear">Crear</button>
+                               <br>
+                               <h5 style="color: rgb(204, 184, 9); padding-top: 2%;">Nombre Completo</h3>
+                               <input type="text" id="nombre_completo" name="nombre_completo" required 
+                               style="padding: 10px; font-size: 16px; border-radius: 5px; width: 200px;">
+                               <div style="padding-top: 2%;"><button class="BtnCrear">Crear</button></div>
+                    </form> 
+                    
                 </div>
             </div>
         </section>
+
 
 
 

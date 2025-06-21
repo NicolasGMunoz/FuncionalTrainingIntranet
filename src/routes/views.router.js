@@ -292,7 +292,42 @@ router.post('/rutinas/ejercicio', async (req, res) => {
   }
 });
 
+// crear alumno
+ router.post('/alumnos', async (req, res)=>{
+  const {dni, nombre_completo} = req.body;
+  try {
+    await personaManager.addAlumno(
+      dni,
+      nombre_completo
+    );
+    res.render("index");
+  } catch (error) {
+    res.render("errorAlumno")
+    
+  }
+ })
+router.post('/alumnos', async (req, res) => {
+  const { dni, nombre_completo } = req.body;
+  try {
+    const result = await personaManager.addAlumno(dni, nombre_completo);
+
+ res.render('index', {
+      dni,
+      nombre_completo,
+      success: 'Alumno agregado',
+      error: null
+    });
+  } catch (error) {
+    console.error("Error inesperado:", error);
+    res.render("errorAlumno");
+  }
+});
 
 
+
+
+ router.get('/errorAlumno', (req, res) => {
+ res.redirect("index")
+ })
 
 export default router
