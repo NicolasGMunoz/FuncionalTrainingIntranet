@@ -18,6 +18,41 @@
   <link href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Foundation&display=swap" rel="stylesheet">
   <!--Style-->
   <link rel="stylesheet" href="/css/style.css">
+  <style>
+  /* Pestañas con texto amarillo y fondo negro */
+  .nav-tabs {
+    background-color: black;
+    border-bottom: 2px solid #ffc107; /* amarillo */
+  }
+  .nav-tabs .nav-link {
+    color: #ffc107; /* amarillo para pestañas no activas */
+    border: none;
+    font-weight: 600;
+  }
+  .nav-tabs .nav-link.active {
+    color: black !important;
+    background-color: #ffc107 !important; /* amarillo fondo para pestaña activa */
+    border: none;
+  }
+
+  /* Botones actualizar y eliminar juntos */
+  .btn-actualizar-eliminar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  /* Botón Agregar abajo, centrado */
+  .form-agregar-ejercicio {
+    max-width: 400px;
+    margin-top: 10px;
+  }
+  .form-agregar-ejercicio button {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+  }
+</style>
 </head>
 
 <body>
@@ -54,111 +89,102 @@
     </div>
   </nav>
 
-  <section class="container-fluid">
-    <h2 class="rutinasH3">Rutinas</h2>
+ <section class="container my-4" style="max-width: 600px;">
+  <h2 class="text-center mb-4" style="color:rgb(254, 199, 1);">Rutinas</h2>
 
-    <!-- Crear nueva rutina -->
-    <hr>
-    <h3 class="rutinasH3">Nueva Rutina</h3>
-    <form method="POST" action="/rutinas" class="row g-2 align-items-center">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-lg-4">
+  <!-- Crear nueva rutina -->
+  <hr>
+  <h3 class="text-center mb-4" style="color:rgb(254, 199, 1);">Nueva Rutina</h3>
+  <form method="POST" action="/rutinas" class="d-flex justify-content-center mb-4">
+    <input type="text" name="Nombre_rutina" class="form-control me-2" placeholder="Nombre de la rutina" style="max-width: 400px;" required>
+    <button class="btn btn-warning" type="submit" style="min-width: 100px;">Crear</button>
+  </form>
 
-          </div>
-          <div class="col-lg-4">
-            <input type="text" name="Nombre_rutina" class="form-control" placeholder="Nombre de la rutina" required>
-            <div class="col-auto">
-              <button class="BtnCrear" type="submit">Crear</button>
-            </div>
-          </div>
-          <div class="col-lg-4">
+  <% if (typeof error !=='undefined' && error) { %>
+    <div class="alert alert-danger text-center">
+      <%= error %>
+    </div>
+  <% } %>
+  <% if (typeof success !=='undefined' && success) { %>
+    <div class="alert alert-success text-center">
+      <%= success %>
+    </div>
+  <% } %>
 
-          </div>
-        </div>
-      </div>
+  <!-- Barra con pestañas de rutinas -->
+  <ul class="nav nav-tabs justify-content-center mb-4" id="rutinasTab" role="tablist" style="cursor:pointer;">
+    <% rutinas.forEach((rutina, index) => { %>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link <%= index === 0 ? 'active' : '' %>"
+          id="tab-<%= index %>"
+          data-bs-toggle="tab"
+          data-bs-target="#rutina-<%= index %>"
+          type="button"
+          role="tab"
+          aria-controls="rutina-<%= index %>"
+          aria-selected="<%= index === 0 ? 'true' : 'false' %>">
+          <%= rutina.Nombre_rutina %>
+        </button>
+      </li>
+    <% }) %>
+  </ul>
 
+  <div class="tab-content">
+    <% rutinas.forEach((rutina, index) => { %>
+      <div
+        class="tab-pane fade <%= index === 0 ? 'show active' : '' %>"
+        id="rutina-<%= index %>"
+        role="tabpanel"
+        aria-labelledby="tab-<%= index %>">
 
+        <div class="card p-4 shadow-sm mb-5" style="background-color: #fff;">
 
-    </form>
+          <h4 class="mb-3" style="color:#333;"><%= rutina.Nombre_rutina %></h4>
 
-    <% if (typeof error !=='undefined' && error) { %>
-      <div class="alert alert-danger">
-        <%= error %>
-      </div>
-      <% } %>
-        <% if (typeof success !=='undefined' && success) { %>
-          <div class="alert alert-success">
-            <%= success %>
-          </div>
-          <% } %>
+          <!-- Editar nombre y eliminar juntos -->
+          <form method="POST" action="/rutinas/editar" class="btn-actualizar-eliminar">
+            <input type="hidden" name="nombre_viejo" value="<%= rutina.Nombre_rutina %>">
+            <input type="text" name="nombre_nuevo" value="<%= rutina.Nombre_rutina %>" class="form-control" style="max-width: 250px;" required>
+            <button class="btn btn-warning" type="submit" style="min-width: 100px;">Actualizar</button>
 
-            <% rutinas.forEach(rutina=> { %>
-              <div class="card mb-3 p-3">
-                <div>
-                  <h5 class="card-title">
-                    <%= rutina.Nombre_rutina %>
-                  </h5>
+            <form method="POST" action="/rutinas/delete">
+              <input type="hidden" name="nombre" value="<%= rutina.Nombre_rutina %>">
+              <button class="btn btn-danger" type="submit" style="min-width: 100px;">Eliminar</button>
+            </form>
+          </form>
 
-                  <!-- Editar nombre -->
-                  <form method="POST" action="/rutinas/editar" class="d-inline-block me-2">
-                    <input type="hidden" name="nombre_viejo" value="<%= rutina.Nombre_rutina %>">
-                    <input type="text" name="nombre_nuevo" value="<%= rutina.Nombre_rutina %>" required>
-                    <button class="btnGabi" type="submit">Actualizar</button>
-                  </form>
-
-                  <!-- Eliminar -->
-                  <form method="POST" action="/rutinas/delete" class="d-inline-block me-2">
-                    <input type="hidden" name="nombre" value="<%= rutina.Nombre_rutina %>">
-                    <button class="btnGabi" type="submit">Eliminar</button>
-                  </form>
-                </div>
-
-                <!-- Agregar ejercicio -->
-                <form method="POST" action="/rutinas/ejercicio" class="mt-2" >
-                  <input type="hidden" name="Nombre_rutina" value="<%= rutina.Nombre_rutina %>">
-                  <div class="row g-2 align-items-center">
-                    <div class="col-auto">
-                      <select name="Nombre_ejercicio" class="form-select form-select-sm" required>
-                        <option value="">Ejercicio…</option>
-                        <% ejercicios.forEach(e=> { %>
-                          <option value="<%= e.Nombre_ejercicio %>">
-                            <%= e.Nombre_ejercicio %>
-                          </option>
-                          <% }) %>
-                      </select>
-                    </div>
-                    <div class="col-auto">
-                      <input type="number" name="repeticiones" class="form-control form-control-sm" placeholder="Reps"
-                        min="1" required>
-                    </div>
-                    <div class="col-auto">
-                      <input type="number" name="peso" class="form-control form-control-sm" placeholder="Peso" min="0"
-                        step="0.1" required>
-                    </div>
-                    <div class="col-auto">
-                      <button class="btnGabi" type="submit">Agregar ejercicio</button>
-                    </div>
-                  </div>
-                </form>
-
-                <form method="POST" action="/rutinas/asignar" class="d-inline-block me-2" style="padding-top: 1%;">
-                  <input type="hidden" name="Nombre_rutina" value="<%= rutina.Nombre_rutina %>">
-                  <select name="DNI" class="form-select form-select-sm d-inline-block" style="width:auto;" required>
-                    <option value="">Alumno</option>
-                    <% alumnos.forEach(alumno=> { %>
-                      <option value="<%= alumno.DNI_Persona%>">
-                        DNI: <%= alumno.DNI_Persona%>
-                      </option>
-                      <% }) %>
-                  </select>
-                  <button class="btnGabi" type="submit">Asignar</button>
-                </form>
-              </div>
-
-
+          <!-- Agregar ejercicio con boton abajo -->
+          <form method="POST" action="/rutinas/ejercicio" class="form-agregar-ejercicio">
+            <input type="hidden" name="Nombre_rutina" value="<%= rutina.Nombre_rutina %>">
+            <select name="Nombre_ejercicio" class="form-select form-select-sm mb-2" required>
+              <option value="">Ejercicio</option>
+              <% ejercicios.forEach(e => { %>
+                <option value="<%= e.Nombre_ejercicio %>"><%= e.Nombre_ejercicio %></option>
               <% }) %>
-  </section>
+            </select>
+            <input type="number" name="repeticiones" class="form-control form-control-sm mb-2" placeholder="Repeticiones" min="1" required>
+            <input type="number" name="peso" class="form-control form-control-sm mb-2" placeholder="Peso" min="0" step="0.1" required>
+            <button class="btn btn-warning btn-sm" type="submit">Agregar</button>
+          </form>
+
+          <!-- Asignar alumno -->
+          <form method="POST" action="/rutinas/asignar" class="d-flex align-items-center mt-3" style="gap: 10px;">
+            <input type="hidden" name="Nombre_rutina" value="<%= rutina.Nombre_rutina %>">
+            <select name="DNI" class="form-select form-select-sm" style="max-width: 200px;" required>
+              <option value="">Alumno</option>
+              <% alumnos.forEach(alumno => { %>
+                <option value="<%= alumno.DNI_Persona %>">DNI: <%= alumno.DNI_Persona %></option>
+              <% }) %>
+            </select>
+            <button class="btn btn-warning btn-sm" type="submit" style="min-width: 100px;">Asignar</button>
+          </form>
+        </div>
+
+      </div>
+    <% }) %>
+  </div>
+</section>
 
 
   <!-- footer -->
@@ -171,6 +197,7 @@
           Team</a>
       </div>
     </div>
+
     </div>
   </footer>
   <!-- Mi Js -->

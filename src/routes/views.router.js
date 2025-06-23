@@ -78,7 +78,7 @@ router.get('/logout', (req, res) => {
 });
 
 
-router.use(isAuthenticated);
+//router.use(isAuthenticated);
 
 //alumnos
 router.get("/alumnos", (req, res) => {

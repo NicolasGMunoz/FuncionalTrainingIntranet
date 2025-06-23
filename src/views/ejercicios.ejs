@@ -18,6 +18,84 @@
   <link href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Foundation&display=swap" rel="stylesheet">
   <!--Style-->
   <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+  /* Estilos para tabla */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+  }
+  th, td {
+    border: 1px solid #000;
+    padding: 8px 12px;
+    text-align: left;
+  }
+  th {
+    background-color: black;
+    color: rgb(254, 199, 1);
+  }
+  /* Botones */
+  .btn-actualizar {
+    background-color: rgb(254, 199, 1);
+    color: black;
+    border: none;
+    padding: 6px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  .btn-eliminar {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  /* Inputs en tabla */
+  input[type="text"] {
+    width: 100%;
+    padding: 4px 6px;
+    box-sizing: border-box;
+  }
+
+  /* Contenedor general */
+  section {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+    border-radius: 8px;
+  }
+
+  /* Título agregar ejercicio */
+  .ejerciciosh3 {
+    color: rgb(254, 199, 1);
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+
+  /* Form agregar ejercicio */
+  form.agregar-ejercicio-form {
+    display: flex;
+    gap: 10px;
+  }
+  form.agregar-ejercicio-form input[type="text"] {
+    flex-grow: 1;
+  }
+  form.agregar-ejercicio-form button {
+    background-color: rgb(254, 199, 1);
+    color: black;
+    border: none;
+    padding: 8px 16px;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+</style>
 </head>
 
 <body>
@@ -50,43 +128,43 @@
 
 
 
-  <section>
-    <table border="1">
-      <thead>
-        <tr>
-          <th class="rutinasH3">Nombre</th>
-          <th class="rutinasH3">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% ejercicios.forEach(ej=> { %>
-          <tr>
-            <form method="POST" action="/ejercicios/editar">
-              <td>
-                <input type="text" name="nombre_nuevo" value="<%= ej.Nombre_ejercicio %>" required>
-                <input type="hidden" name="nombre_viejo" value="<%= ej.Nombre_ejercicio %>">
-              </td>
-              <td>
-                <button class="BtnCrear" type="submit">Actualizar</button>
-              </td>
-            </form>
-            <td>
-              <form method="POST" action="/ejercicios/delete" style="display:inline;">
-                <input type="hidden" name="nombre" value="<%= ej.Nombre_ejercicio %>">
-                <button class="BtnCrear" type="submit">Eliminar</button>
-              </form>
-            </td>
-          </tr>
-          <% }) %>
-      </tbody>
-    </table>
+ <section>
+  <h3 class="ejerciciosh3">Agregar nuevo ejercicio</h3>
+  <form method="POST" action="/ejercicios" class="agregar-ejercicio-form mb-4">
+    <input type="text" name="nombre_ejercicio" placeholder="Nombre del ejercicio" required>
+    <button type="submit">Crear</button>
+  </form>
 
-    <h3 class="ejerciciosh3">Agregar nuevo ejercicio</h3>
-    <form method="POST" action="/ejercicios">
-      <input type="text" name="nombre_ejercicio" placeholder="Nombre del ejercicio" required>
-      <button class="BtnCrear" type="submit">Crear</button>
-    </form>
-  </section>
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th colspan="2">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% ejercicios.forEach(ej => { %>
+      <tr>
+        <form method="POST" action="/ejercicios/editar">
+          <td>
+            <input type="text" name="nombre_nuevo" value="<%= ej.Nombre_ejercicio %>" required>
+            <input type="hidden" name="nombre_viejo" value="<%= ej.Nombre_ejercicio %>">
+          </td>
+          <td>
+            <button class="btn-actualizar" type="submit">Actualizar</button>
+          </td>
+        </form>
+        <td>
+          <form method="POST" action="/ejercicios/delete" style="display:inline;">
+            <input type="hidden" name="nombre" value="<%= ej.Nombre_ejercicio %>">
+            <button class="btn-eliminar" type="submit">Eliminar</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
 
 
 
