@@ -1,19 +1,17 @@
 import { Router } from "express";
 import { __dirname } from "../utils.js";
-import ClaseManager from "../manager/clase.js";
 import EjercicioManager from "../manager/ejercicio.js";
-import PersonaManager from "../manager/persona.js";
+import PersonaManager, { isAuthenticated } from "../manager/persona.js";
 import RutinaManager from "../manager/rutina.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { promisify } from "util";
 
-
+dotenv.config()
 const router = Router()
-const claseManager = new ClaseManager();
 const ejercicioManager = new EjercicioManager();
 const personaManager = new PersonaManager();
 const rutinaManager = new RutinaManager();
-dotenv.config()
 
 
 
@@ -21,18 +19,6 @@ dotenv.config()
 router.get("/", (req, res) => {
   res.render("index");
 })
-
-router.get("/alumnos", (req, res) => {
-  res.render("alumnos");
-  if (token) {
-    res.render("index", { isAuthenticated: true })
-  }
-  else {
-    res.render("login", { isAuthenticated: false })
-  }
-})
-
-
 
 //presentes
 router.post('/buscar-alumno', async (req, res) => {
@@ -49,61 +35,77 @@ router.post('/buscar-alumno', async (req, res) => {
   }
 });
 
+
 //login
 router.get("/login", (req, res) => {
   res.render("login");
-  if (token) {
-    res.render("index", { isAuthenticated: true })
-  }
-  else {
-    res.render("login", { isAuthenticated: false })
-  }
 })
 
+
 router.post("/login", async (req, res) => {
-  const { dni, password } = req.body
+  const { dni, pass } = req.body
   try {
-    const user = await personaManager.getPersonaByDNI(dni)
+    const user = await personaManager.getEncargado(dni)
     if (!user) {
-      res.status(401).send("Usuario no encontrado")
+       return res.render("login",{error: "Usuario no encontrado"})
     }
-    else if (user.password != password) {
-      res.status(401).send("Contraseña incorrecta")
+    if (user.pass !== pass) {
+      return res.render("login", { error: "Contraseña incorrecta" });
     }
-    else {
-      const token = jwt.sign({ dni }, process.env.SECRET_KEY, { expiresIn: process.env.JWT_TIEMPO_EXPIRACION })
+
+      const token = jwt.sign({ dni: user.dni, rol: 'encargado' }, process.env.SECRET_KEY, { expiresIn: process.env.JWT_TIEMPO_EXPIRACION })
       const cookieOptions = {
-        expires: new Date(Date.now() + process.env.JWT_TIEMPO_EXPIRACION * 24 * 60 * 60 * 100),
         httpOnly: true
       }
-
       res.cookie('jwt', token, cookieOptions)
-      res.status(200).json({ success: true, message: 'Bienvenido' });
+      return res.redirect("/")
 
-    }
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Error interno del servidor' })
+    res.status(500).json({ success: false, message: 'Error interno del servidor' }) 
   }
 
 })
 //LOGOUT
 router.get('/logout', (req, res) => {
-  res.cookie('jwt', '', { expires: new Date(0), httpOnly: true });
+  res.clearCookie("jwt");
   res.send(`
         <script>
             alert('Sesión cerrada correctamente');
             window.location.href = '/login';
         </script>
     `);
-  // res.redirect('/login', );  // Redirige al inicio después de cerrar sesión
+  return res.redirect('/login');
 });
 
-//pagos
-router.get("/pagos", (req, res) => {
-  res.render("pagos");
+
+router.use(isAuthenticated);
+
+//alumnos
+router.get("/alumnos", (req, res) => {
+  res.render("alumnos");
 })
 
+// crear alumno
+router.post('/alumnos', async (req, res) => {
+  const { dni, nombre_completo } = req.body;
+  try {
+    const result = await personaManager.addAlumno(dni, nombre_completo);
 
+ res.render('index', {
+      dni,
+      nombre_completo,
+      success: 'Alumno agregado',
+      error: null
+    });
+  } catch (error) {
+    console.error("Error inesperado:", error);
+    res.render("errorAlumno");
+  }
+});
+
+ router.get('/errorAlumno', (req, res) => {
+ res.redirect("index")
+ })
 
 //ejercicios
 router.get("/ejercicios", async (req, res) => {
@@ -309,42 +311,6 @@ router.post('/rutinas/ejercicio', async (req, res) => {
   }
 });
 
-// crear alumno
- router.post('/alumnos', async (req, res)=>{
-  const {dni, nombre_completo} = req.body;
-  try {
-    await personaManager.addAlumno(
-      dni,
-      nombre_completo
-    );
-    res.render("index");
-  } catch (error) {
-    res.render("errorAlumno")
-    
-  }
- })
-router.post('/alumnos', async (req, res) => {
-  const { dni, nombre_completo } = req.body;
-  try {
-    const result = await personaManager.addAlumno(dni, nombre_completo);
 
- res.render('index', {
-      dni,
-      nombre_completo,
-      success: 'Alumno agregado',
-      error: null
-    });
-  } catch (error) {
-    console.error("Error inesperado:", error);
-    res.render("errorAlumno");
-  }
-});
-
-
-
-
- router.get('/errorAlumno', (req, res) => {
- res.redirect("index")
- })
 
 export default router

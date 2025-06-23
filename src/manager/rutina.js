@@ -56,7 +56,7 @@ export default class RutinaManager{
     async assingRutinaToAlumno(nombrerutina, DNI){
         try{
             await this.pool.query(
-                'INSERT INTO Alumno_usa_rutina (DNI_Persona, Nombre_rutina) VALUES (?,?)',[DNI, nombrerutina])
+                'INSERT INTO Alumno_usa_rutina (DNI_Persona_Alumno, Nombre_rutina) VALUES (?,?)',[DNI, nombrerutina])
             }
         catch(e){
             console.error("Error al asignar rutina", e)

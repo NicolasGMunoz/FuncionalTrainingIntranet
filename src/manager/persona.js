@@ -1,5 +1,7 @@
-import { log } from "console";
 import { pool } from "../db/poolConfig.js";
+import { promisify } from "util";
+import jwt from 'jsonwebtoken'
+
 
 export default class PersonaManager{
     constructor(){
@@ -61,6 +63,19 @@ const result = await this.pool.query('INSERT INTO Alumno (DNI_Persona) VALUES (?
         return null
     }
 }
+
+    async getEncargado(dni) {
+    try {
+        const [rows] = await this.pool.query('SELECT DNI_Persona AS dni, Usuario AS usuario, Pass AS pass FROM Encargado WHERE DNI_Persona = ?', [dni])
+        if (rows.length === 0) {
+            return null
+        }
+        return rows[0]
+    } catch (e) {
+        console.error("Error al buscar persona", e);
+        return null
+    }
+}
     async getAlumnos(){
         try {
             const [alumnos] = await this.pool.query('SELECT * FROM Alumno')
@@ -82,4 +97,26 @@ const result = await this.pool.query('INSERT INTO Alumno (DNI_Persona) VALUES (?
     return { success: false, message: "Error inesperado en pagoCuota", e };
   }
     }
+
+
 }
+
+export const isAuthenticated = async (req, res, next) => {
+    if (req.cookies.jwt) {
+        try {
+            const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.SECRET_KEY);
+    
+            const [rows] = await pool.query('SELECT * FROM Encargado WHERE DNI_Persona = ?', [decoded.dni])
+                if (!rows || rows[0] === 0) {
+                    return res.status(401).send("No tienes permiso de acceder");
+                }
+                req.user = rows[0];
+                return next();
+
+        } catch (error) {
+            console.log(error);
+            return res.status(401).send("Token inválido o expirado");
+        }
+    } else {
+        return res.status(401).redirect('/login');
+    }}

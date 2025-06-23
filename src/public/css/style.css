@@ -92,3 +92,9 @@ h1{
  .ejerciciosh3{
   color: rgb(254,199,1);
  }
+
+ .btnManu{
+  background-color: rgb(254,199,1) ;
+  color: black;
+  border: none
+ }
